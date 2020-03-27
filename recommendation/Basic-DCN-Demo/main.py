@@ -56,18 +56,21 @@ def run_base_model_dcn(dfTrain, dfTest, folds, dcn_params):
     _get = lambda x, l: [x[i] for i in l]
 
     for i, (train_idx, valid_idx) in enumerate(folds):
+        print("i",i)
         cate_Xi_train_, cate_Xv_train_, numeric_Xv_train_,y_train_ = _get(cate_Xi_train, train_idx), _get(cate_Xv_train, train_idx),_get(numeric_Xv_train, train_idx), _get(y_train, train_idx)
         cate_Xi_valid_, cate_Xv_valid_, numeric_Xv_valid_,y_valid_ = _get(cate_Xi_train, valid_idx), _get(cate_Xv_train, valid_idx),_get(numeric_Xv_train, valid_idx), _get(y_train, valid_idx)
 
-        dcn =  DCN(**dcn_params)
+        dcn = DCN(**dcn_params)
 
-        dcn.fit(cate_Xi_train_, cate_Xv_train_, numeric_Xv_train_,y_train_, cate_Xi_valid_, cate_Xv_valid_, numeric_Xv_valid_,y_valid_)
-
+        s=dcn.fit(cate_Xi_train_, cate_Xv_train_, numeric_Xv_train_,y_train_, cate_Xi_valid_, cate_Xv_valid_, numeric_Xv_valid_,y_valid_,i)
+        dcn.saver.save(s, 'D:/code/tensorflow_practice/recommendation/Basic-DCN-Demo/model/model', global_step=i + 1)
 #dfTrain = pd.read_csv(config.TRAIN_FILE,nrows=10000,index_col=None).to_csv(config.TRAIN_FILE,index=False)
 #dfTest = pd.read_csv(config.TEST_FILE,nrows=2000,index_col=None).to_csv(config.TEST_FILE,index=False)
 
 dfTrain, dfTest, X_train, y_train, X_test, ids_test = load_data()
 print('load_data_over')
+
+# StratifiedKFold 分层采样交叉切分，确保训练集，测试集中各类别样本的比例与原始数据集中相同。
 folds = list(StratifiedKFold(n_splits=config.NUM_SPLITS, shuffle=True,
                              random_state=config.RANDOM_SEED).split(X_train, y_train))
 print('process_data_over')

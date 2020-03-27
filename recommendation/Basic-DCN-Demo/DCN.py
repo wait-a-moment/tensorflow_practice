@@ -152,10 +152,6 @@ class DCN(BaseEstimator, TransformerMixin):
             if self.verbose > 0:
                 print("#params: %d" % total_parameters)
 
-
-
-
-
     def _initialize_weights(self):
         weights = dict()
 
@@ -242,7 +238,7 @@ class DCN(BaseEstimator, TransformerMixin):
                      self.train_phase: True}
 
         loss = self.sess.run([self.loss], feed_dict=feed_dict)
-
+        print("loss",loss)
         return loss
 
 
@@ -292,8 +288,12 @@ class DCN(BaseEstimator, TransformerMixin):
 
             if has_valid:
                 y_valid = np.array(y_valid).reshape((-1,1))
+                print("cate_Xi_valid",cate_Xi_valid)
+                print("y_valid",y_valid)
                 loss = self.predict(cate_Xi_valid, cate_Xv_valid, numeric_Xv_valid, y_valid)
+                print("test",self.prefict([171, 180, 193, 197, 202, 208, 210, 211, 213, 215, 217, 219, 221, 223, 232, 241, 243, 245, 1, 13, 15, 18, 29, 32, 49, 53, 55, 60, 72, 63]))
                 print("epoch",epoch,"loss",loss)
+        return self.sess
 
 
 
